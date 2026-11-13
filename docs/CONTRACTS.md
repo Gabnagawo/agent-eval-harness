@@ -122,11 +122,11 @@ its shape).
 class FilesEnvironment(Environment):
     kind = "files"
 
-    def load(self, state: dict[str, Any]) -> None: ...      # initial state (a deep copy)
-    def tools(self) -> list[ToolSpec]: ...                  # JSON Schema per tool
-    def snapshot(self) -> dict[str, Any]: ...               # JSON-serialisable state
+    def load(self, state: dict[str, Any]) -> None: ...  # initial state (a deep copy)
+    def tools(self) -> list[ToolSpec]: ...  # JSON Schema per tool
+    def snapshot(self) -> dict[str, Any]: ...  # JSON-serialisable state
 
-    def tool_files_read(self, path: str) -> str: ...        # one method per tool
+    def tool_files_read(self, path: str) -> str: ...  # one method per tool
 ```
 
 - Modules under `agent_eval/envs/` are imported automatically; `@register` is all the
@@ -252,6 +252,7 @@ suite.
 ```python
 class Agent(Protocol):
     name: str
+
     def run(self, task: TaskSpec, world: World) -> AgentResult: ...
 ```
 
