@@ -44,6 +44,10 @@ success:
     op: contains
     value: Service health confirmed OK
     description: resolution comment posted
+  - path: "length(api.requests[?method=='GET' && path=='/health/1'])"
+    op: gte
+    value: 1
+    description: the health endpoint was queried before resolving
 traps: []
 reference_solution:
   - tool: api_get
