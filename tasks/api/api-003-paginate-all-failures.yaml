@@ -1,0 +1,49 @@
+id: api-003-paginate-all-failures
+family: api
+title: Count failed test cases across paginated collection
+prompt: >-
+  Please check all pages of /test_cases (with page_size 3) and count how many test
+  cases have status 'failed'. Answer with just the count.
+envs:
+  api:
+    page_size: 3
+    resources:
+      test_cases:
+        - id: "1"
+          name: test_auth_login
+          status: passed
+        - id: "2"
+          name: test_auth_token_refresh
+          status: failed
+        - id: "3"
+          name: test_checkout_cart
+          status: passed
+        - id: "4"
+          name: test_checkout_payment
+          status: failed
+        - id: "5"
+          name: test_profile_update
+          status: passed
+        - id: "6"
+          name: test_export_csv
+          status: failed
+seed: 403
+tools: [api_get]
+max_steps: 6
+optimal_steps: 2
+expected_tools: [api_get]
+answer:
+  - op: contains
+    value: "3"
+traps: []
+reference_solution:
+  - tool: api_get
+    args:
+      path: /test_cases
+      params: { page: 1 }
+  - tool: api_get
+    args:
+      path: /test_cases
+      params: { page: 2 }
+reference_answer: There are 3 failed test cases.
+notes: Control task with no traps. Requires iterating over paginated API results.

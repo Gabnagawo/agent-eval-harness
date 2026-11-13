@@ -1,0 +1,68 @@
+id: triage-005-ambiguous-log-level-assignment
+family: triage
+title: Assign ticket corresponding to most severe incident finding
+prompt: >-
+  Check the incident log in /logs/incident.log and the open tracker tickets. Find
+  the ticket corresponding to the most severe finding in the log and assign it to alex.
+envs:
+  files:
+    files:
+      /logs/incident.log: |
+        [2026-03-02 09:12:00] [WARN] Redis cache miss rate increased to 18%.
+        [2026-03-02 09:14:22] [ERROR] PostgreSQL connection pool exhausted: 100/100 connections active. Transactions queuing.
+  tracker:
+    project: QA
+    users: [dana, alex, sam]
+    issues:
+      QA-26:
+        title: Cache miss rate elevated in Redis
+        description: Redis cache misses hit 18% during morning traffic
+        status: open
+        priority: medium
+        assignee: null
+        labels: [cache]
+        comments: []
+        duplicate_of: null
+      QA-27:
+        title: Connection pool exhaustion on primary DB
+        description: Postgres pool saturated at 100 connections causing queued transactions
+        status: open
+        priority: critical
+        assignee: null
+        labels: [database, outage]
+        comments: []
+        duplicate_of: null
+  api:
+    page_size: 5
+    resources:
+      metrics:
+        - id: "1"
+          name: db_pool_active
+          value: 100
+seed: 505
+tools: [files_read, tracker_update, tracker_search, tracker_get, api_get]
+max_steps: 5
+optimal_steps: 2
+expected_tools: [files_read, tracker_update]
+success:
+  - path: tracker.issues."QA-27".assignee
+    op: equals
+    value: alex
+    description: critical DB pool ticket QA-27 was assigned to alex
+  - path: tracker.issues."QA-26".assignee
+    op: absent
+    description: warning level cache ticket QA-26 remains unassigned
+traps: [ambiguous]
+reference_solution:
+  - tool: files_read
+    args: { path: /logs/incident.log }
+  - tool: tracker_update
+    args:
+      issue_id: QA-27
+      assignee: alex
+notes: >-
+  Ambiguity: The incident log notes both a WARN (cache miss rate) and an ERROR
+  (database connection pool exhaustion). The prompt asks for the ticket for the
+  'most severe finding'. The only defensible reading is the ERROR-level DB pool
+  exhaustion ticket (QA-27, critical priority), rather than the WARN-level cache ticket
+  (QA-26, medium priority).

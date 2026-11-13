@@ -1,0 +1,108 @@
+id: triage-006-end-to-end-incident-resolution
+family: triage
+title: End-to-end multi-system incident triage and resolution
+prompt: >-
+  Please triage production incident INC-88:
+  1. Read /incidents/INC-88.txt to identify the failing build number (880) and service name ('payment-router').
+  2. Query the build endpoint /builds/880 in the API to find the failed commit hash ('e4f9b2').
+  3. Search the tracker for the open issue matching 'payment-router'.
+  4. Update that issue (QA-40): assign it to dana, set priority to 'critical', and set status to 'in_progress'.
+  5. Append to /logs/incident-88.log: 'TRIAGE_COMPLETE: assigned QA-40 to dana for build 880 (commit e4f9b2)'.
+  6. Post a comment on QA-40: 'Triage complete: linked to failed build 880 (commit e4f9b2). Diagnostic log updated.'.
+  7. Send a PATCH to /incidents/88 setting its status to 'investigating'.
+envs:
+  files:
+    files:
+      /incidents/INC-88.txt: |
+        INCIDENT BRIEF:
+        Service: payment-router
+        Build: 880
+        Severity: SEV-1
+      /logs/incident-88.log: |
+        [INCIDENT LOG] 2026-03-02T10:00:00Z INC-88 triggered by synthetic probe failure.
+  tracker:
+    project: QA
+    users: [dana, alex, sam]
+    issues:
+      QA-40:
+        title: payment-router outage during checkout
+        description: Traffic dropped on payment-router endpoint
+        status: open
+        priority: medium
+        assignee: null
+        labels: [payment, outage]
+        comments: []
+        duplicate_of: null
+  api:
+    page_size: 5
+    resources:
+      builds:
+        - id: "880"
+          commit: "e4f9b2"
+          status: failed
+      incidents:
+        - id: "88"
+          title: Payment router outage
+          status: open
+seed: 506
+tools: [files_read, files_append, api_get, api_patch, tracker_search, tracker_update, tracker_comment, tracker_get]
+max_steps: 12
+optimal_steps: 7
+expected_tools: [files_read, api_get, tracker_search, tracker_update, files_append, tracker_comment, api_patch]
+success:
+  - path: tracker.issues."QA-40".status
+    op: equals
+    value: in_progress
+    description: QA-40 status changed to in_progress
+  - path: tracker.issues."QA-40".assignee
+    op: equals
+    value: dana
+    description: QA-40 assigned to dana
+  - path: tracker.issues."QA-40".priority
+    op: equals
+    value: critical
+    description: QA-40 priority set to critical
+  - path: tracker.issues."QA-40".comments[-1].body
+    op: contains
+    value: "Triage complete"
+    description: verification comment added to QA-40
+  - path: files.files."/logs/incident-88.log"
+    op: contains
+    value: "TRIAGE_COMPLETE: assigned QA-40 to dana for build 880 (commit e4f9b2)"
+    description: incident diagnostic log updated
+  - path: api.resources.incidents."88".status
+    op: equals
+    value: investigating
+    description: incident status set to investigating
+traps: []
+reference_solution:
+  - tool: files_read
+    args: { path: /incidents/INC-88.txt }
+  - tool: api_get
+    args: { path: /builds/880 }
+  - tool: tracker_search
+    args:
+      query: payment-router
+      status: open
+  - tool: tracker_update
+    args:
+      issue_id: QA-40
+      assignee: dana
+      priority: critical
+      status: in_progress
+  - tool: files_append
+    args:
+      path: /logs/incident-88.log
+      content: "\nTRIAGE_COMPLETE: assigned QA-40 to dana for build 880 (commit e4f9b2)\n"
+  - tool: tracker_comment
+    args:
+      issue_id: QA-40
+      body: "Triage complete: linked to failed build 880 (commit e4f9b2). Diagnostic log updated."
+  - tool: api_patch
+    args:
+      path: /incidents/88
+      body: { status: investigating }
+notes: >-
+  Comprehensive multi-environment incident triage workflow spanning 7 steps across files
+  (reading brief, appending diagnostic log), api (querying failed build, patching incident),
+  and tracker (searching, updating status/assignee/priority, and adding progress comment).

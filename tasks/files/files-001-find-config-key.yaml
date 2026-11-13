@@ -1,0 +1,30 @@
+id: files-001-find-config-key
+family: files
+title: Find database port in configuration
+prompt: >-
+  Could you check /etc/app.conf and tell me which port is configured for
+  database_port? Just the port number.
+envs:
+  files:
+    files:
+      /etc/app.conf: |
+        # Application Configuration
+        app_name=WidgetCore
+        database_host=db.internal.net
+        database_port=5432
+        database_user=widget_admin
+        cache_ttl=3600
+seed: 101
+tools: [files_list, files_read, files_search]
+max_steps: 3
+optimal_steps: 1
+expected_tools: [files_read]
+answer:
+  - op: contains
+    value: "5432"
+traps: []
+reference_solution:
+  - tool: files_read
+    args: { path: /etc/app.conf }
+reference_answer: The database_port configured in /etc/app.conf is 5432.
+notes: Control task with no traps. Verifies reading a configuration file.

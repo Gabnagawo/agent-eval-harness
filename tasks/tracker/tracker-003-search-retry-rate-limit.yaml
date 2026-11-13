@@ -1,0 +1,71 @@
+id: tracker-003-search-retry-rate-limit
+family: tracker
+title: Count open security issues with retry on rate limit
+prompt: >-
+  How many open issues currently have the 'security' label? Please search the tracker
+  and answer with just the numeric count.
+envs:
+  tracker:
+    project: QA
+    users: [dana, alex, sam]
+    issues:
+      QA-10:
+        title: Insecure direct object reference in profile
+        description: User profile allows parameter tampering
+        status: open
+        priority: high
+        assignee: dana
+        labels: [security]
+        comments: []
+        duplicate_of: null
+      QA-11:
+        title: SQL injection in search filter
+        description: Raw query string interpolation
+        status: open
+        priority: critical
+        assignee: alex
+        labels: [security]
+        comments: []
+        duplicate_of: null
+      QA-12:
+        title: Outdated SSL cipher suite
+        description: Weak ciphers accepted on port 443
+        status: closed
+        priority: medium
+        assignee: sam
+        labels: [security]
+        comments: []
+        duplicate_of: null
+      QA-13:
+        title: Slow database query on dashboard
+        description: Missing index on created_at
+        status: open
+        priority: medium
+        assignee: dana
+        labels: [performance]
+        comments: []
+        duplicate_of: null
+seed: 203
+faults:
+  - tool: tracker_search
+    calls: [1]
+    error: "429 Too Many Requests: rate limit exceeded, retry"
+tools: [tracker_search, tracker_get]
+max_steps: 5
+optimal_steps: 2
+expected_tools: [tracker_search]
+answer:
+  - op: contains
+    value: "2"
+traps: [tool_error]
+reference_solution:
+  - tool: tracker_search
+    args:
+      label: security
+      status: open
+  - tool: tracker_search
+    args:
+      label: security
+      status: open
+reference_answer: There are 2 open issues with the security label.
+notes: The first search call returns a 429 rate limit error. Retrying the search returns QA-10 and QA-11, yielding a count of 2.

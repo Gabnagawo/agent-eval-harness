@@ -1,0 +1,54 @@
+id: tracker-001-create-regression-ticket
+family: tracker
+title: Create regression ticket for Safari login timeout
+prompt: >-
+  We discovered a login timeout issue on Safari in production. Please open a
+  high-priority bug titled 'Login timeout on Safari', assign it to dana, and add the
+  label 'regression'. Description: 'Users report session expiration after 30 seconds
+  on Safari 17.'.
+envs:
+  tracker:
+    project: QA
+    users: [dana, alex, sam]
+    issues:
+      QA-1:
+        title: Initial setup
+        description: Project scaffold
+        status: closed
+        priority: low
+        assignee: alex
+        labels: [setup]
+        comments: []
+        duplicate_of: null
+seed: 201
+tools: [tracker_create, tracker_search, tracker_get, tracker_update]
+max_steps: 4
+optimal_steps: 1
+expected_tools: [tracker_create]
+success:
+  - path: tracker.issues."QA-2".title
+    op: equals
+    value: Login timeout on Safari
+    description: issue title matches
+  - path: tracker.issues."QA-2".priority
+    op: equals
+    value: high
+    description: priority set to high
+  - path: tracker.issues."QA-2".assignee
+    op: equals
+    value: dana
+    description: assignee set to dana
+  - path: tracker.issues."QA-2".labels
+    op: contains
+    value: regression
+    description: regression label attached
+traps: []
+reference_solution:
+  - tool: tracker_create
+    args:
+      title: Login timeout on Safari
+      description: Users report session expiration after 30 seconds on Safari 17.
+      priority: high
+      assignee: dana
+      labels: [regression]
+notes: Control task with no traps. Verifies creating a new issue with specific metadata.
