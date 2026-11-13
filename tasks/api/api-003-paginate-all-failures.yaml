@@ -2,7 +2,7 @@ id: api-003-paginate-all-failures
 family: api
 title: Count failed test cases across paginated collection
 prompt: >-
-  Please check all pages of /test_cases (with page_size 3) and count how many test
+  Please go through every page of /test_cases and count how many test
   cases have status 'failed'. Answer with just the count.
 envs:
   api:

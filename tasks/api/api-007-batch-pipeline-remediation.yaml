@@ -2,7 +2,7 @@ id: api-007-batch-pipeline-remediation
 family: api
 title: Paginated service inspection and batch remediation with rate-limit retry
 prompt: >-
-  Inspect all pages of /services (page_size 2) across pages 1, 2, and 3. For any
+  Inspect all three pages of /services. For any
   service with status 'degraded':
   - Scale /services/10 to 3 replicas with status 'active'.
   - Scale /services/14 to 2 replicas with status 'active'.
