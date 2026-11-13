@@ -59,7 +59,7 @@ cp .env.example .env
 The repository includes `.pre-commit-config.yaml` with Ruff linting, formatting, and file hygiene checks.
 ```bash
 # Run against all files manually
-uv run pre-commit run --all-files
+uvx pre-commit run --all-files
 ```
 
 ---

@@ -100,7 +100,7 @@ def test_render_comparison() -> None:
     # Metric deltas table
     assert 'class="deltas-table"' in html
     assert "Success Rate" in html
-    assert "+75.0%" in html
+    assert "+75.0 pp" in html
     assert "delta-pos" in html
 
     # Per-family comparison

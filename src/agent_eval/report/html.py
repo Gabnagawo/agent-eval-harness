@@ -89,7 +89,7 @@ def _fmt_delta(metric: str, delta: float | None) -> tuple[str, str]:
 
     if metric in RATE_METRICS:
         sign = "+" if delta > 0 else ""
-        text = f"{sign}{delta * 100:.1f}%"
+        text = f"{sign}{delta * 100:.1f} pp"
         if metric == "forbidden_action_rate":
             cls = "delta-pos" if delta < 0 else "delta-neg"
         else:
@@ -724,7 +724,7 @@ def _render_task_delta_table(
   <td><span class="badge badge-family">{_esc(td.family)}</span></td>
   <td>{_fmt_rate(td.a_success_rate)}</td>
   <td>{_fmt_rate(td.b_success_rate)}</td>
-  <td><span class="delta-badge {delta_cls}">{sign}{delta_val * 100:.1f}%</span></td>
+  <td><span class="delta-badge {delta_cls}">{sign}{delta_val * 100:.1f} pp</span></td>
 </tr>""")
 
     return f"""<div class="delta-card">

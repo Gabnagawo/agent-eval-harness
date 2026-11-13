@@ -92,7 +92,7 @@ def test_run_noop_fails_only_with_a_threshold() -> None:
     assert plain.exit_code == 0
     assert "[1/1] FAIL" in plain.output
     assert "| Valid tool calls | n/a |" in plain.output
-    assert "HTML report" not in plain.output  # no renderer in this checkout of the tests
+    assert "HTML report: " in plain.output
     gated = runner.invoke(cli.app, [*args, "--fail-under", "0.5"])
     assert gated.exit_code == 1
     assert "below 50.0%" in gated.output

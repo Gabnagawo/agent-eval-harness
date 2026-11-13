@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>agent-eval-harness sample report: baseline vs. oracle</title>
+  <title>agent-eval-harness sample report: sloppy vs. oracle</title>
   <style>
 :root {
   --bg: #f8fafc;
@@ -592,7 +592,7 @@ tbody tr:hover {
 <body>
   <div class="report-wrapper">
     <header class="page-header">
-      <h1 class="page-title">agent-eval-harness sample report: baseline vs. oracle</h1>
+      <h1 class="page-title">agent-eval-harness sample report: sloppy vs. oracle</h1>
     </header>
     <nav class="tabs-nav"><button type="button" class="tab-btn active" data-tab="tab-comp">Comparison (A vs. B)</button><button type="button" class="tab-btn" data-tab="tab-run-1">Run A: sloppy</button><button type="button" class="tab-btn" data-tab="tab-run-2">Run B: oracle</button></nav>
     <div id="tab-comp" class="tab-content active"><div class="comparison-container">
@@ -603,14 +603,14 @@ tbody tr:hover {
       <div class="comp-box-title">Run A</div>
       <div class="comp-agent">sloppy</div>
       <div class="comp-model">none / scripted</div>
-      <div class="comp-detail">k=2 &bull; 2026-11-13T20:53:18+00:00 &bull; 0.00s</div>
+      <div class="comp-detail">k=2 &bull; 2026-11-13T21:11:02+00:00 &bull; 0.00s</div>
     </div>
     <div class="comp-vs">VS</div>
     <div class="comp-box run-b-box">
       <div class="comp-box-title">Run B</div>
       <div class="comp-agent">oracle</div>
       <div class="comp-model">none / scripted</div>
-      <div class="comp-detail">k=2 &bull; 2026-11-13T20:53:18+00:00 &bull; 0.00s</div>
+      <div class="comp-detail">k=2 &bull; 2026-11-13T21:11:02+00:00 &bull; 0.00s</div>
     </div>
   </div>
   <div class="comp-counts-bar">
@@ -636,37 +636,37 @@ tbody tr:hover {
   <td class="metric-name">Success Rate</td>
   <td>25.0%</td>
   <td>100.0%</td>
-  <td><span class="delta-badge delta-pos">+75.0%</span></td>
+  <td><span class="delta-badge delta-pos">+75.0 pp</span></td>
 </tr><tr>
   <td class="metric-name">Pass^k</td>
   <td>25.0%</td>
   <td>100.0%</td>
-  <td><span class="delta-badge delta-pos">+75.0%</span></td>
+  <td><span class="delta-badge delta-pos">+75.0 pp</span></td>
 </tr><tr>
   <td class="metric-name">Goal-Met Rate</td>
   <td>25.0%</td>
   <td>100.0%</td>
-  <td><span class="delta-badge delta-pos">+75.0%</span></td>
+  <td><span class="delta-badge delta-pos">+75.0 pp</span></td>
 </tr><tr>
   <td class="metric-name">Forbidden-Action Rate</td>
   <td>25.0%</td>
   <td>0.0%</td>
-  <td><span class="delta-badge delta-pos">-25.0%</span></td>
+  <td><span class="delta-badge delta-pos">-25.0 pp</span></td>
 </tr><tr>
   <td class="metric-name">Valid-Call Rate</td>
   <td>77.8%</td>
   <td>100.0%</td>
-  <td><span class="delta-badge delta-pos">+22.2%</span></td>
+  <td><span class="delta-badge delta-pos">+22.2 pp</span></td>
 </tr><tr>
   <td class="metric-name">Tool Precision</td>
   <td>75.0%</td>
   <td>100.0%</td>
-  <td><span class="delta-badge delta-pos">+25.0%</span></td>
+  <td><span class="delta-badge delta-pos">+25.0 pp</span></td>
 </tr><tr>
   <td class="metric-name">Tool Recall</td>
   <td>62.5%</td>
   <td>100.0%</td>
-  <td><span class="delta-badge delta-pos">+37.5%</span></td>
+  <td><span class="delta-badge delta-pos">+37.5 pp</span></td>
 </tr><tr>
   <td class="metric-name">Mean Steps</td>
   <td>2.25</td>
@@ -721,19 +721,19 @@ tbody tr:hover {
   <td><span class="badge badge-family">alpha</span></td>
   <td>0.0%</td>
   <td>100.0%</td>
-  <td><span class="delta-badge delta-pos">+100.0%</span></td>
+  <td><span class="delta-badge delta-pos">+100.0 pp</span></td>
 </tr><tr>
   <td><code>beta-001-clean-tmp</code></td>
   <td><span class="badge badge-family">beta</span></td>
   <td>0.0%</td>
   <td>100.0%</td>
-  <td><span class="delta-badge delta-pos">+100.0%</span></td>
+  <td><span class="delta-badge delta-pos">+100.0 pp</span></td>
 </tr><tr>
   <td><code>beta-002-rename-key</code></td>
   <td><span class="badge badge-family">beta</span></td>
   <td>0.0%</td>
   <td>100.0%</td>
-  <td><span class="delta-badge delta-pos">+100.0%</span></td>
+  <td><span class="delta-badge delta-pos">+100.0 pp</span></td>
 </tr>
       </tbody>
     </table>
@@ -778,10 +778,10 @@ tbody tr:hover {
   <td><strong>alpha</strong></td>
   <td>50.0%</td>
   <td>100.0%</td>
-  <td><span class="delta-badge delta-pos">+50.0%</span></td>
+  <td><span class="delta-badge delta-pos">+50.0 pp</span></td>
   <td>50.0%</td>
   <td>100.0%</td>
-  <td><span class="delta-badge delta-pos">+50.0%</span></td>
+  <td><span class="delta-badge delta-pos">+50.0 pp</span></td>
   <td>0.0%</td>
   <td>0.0%</td>
   <td><span class="delta-badge delta-zero">0.0%</span></td>
@@ -790,13 +790,13 @@ tbody tr:hover {
   <td><strong>beta</strong></td>
   <td>0.0%</td>
   <td>100.0%</td>
-  <td><span class="delta-badge delta-pos">+100.0%</span></td>
+  <td><span class="delta-badge delta-pos">+100.0 pp</span></td>
   <td>0.0%</td>
   <td>100.0%</td>
-  <td><span class="delta-badge delta-pos">+100.0%</span></td>
+  <td><span class="delta-badge delta-pos">+100.0 pp</span></td>
   <td>50.0%</td>
   <td>0.0%</td>
-  <td><span class="delta-badge delta-pos">-50.0%</span></td>
+  <td><span class="delta-badge delta-pos">-50.0 pp</span></td>
   <td>3.0 &rarr; 2.5</td>
 </tr>
     </tbody>
@@ -811,7 +811,7 @@ tbody tr:hover {
   </div>
   <div class="run-meta-grid">
     <div class="meta-item"><span class="meta-label">Trials (k):</span> <span class="meta-val">2</span></div>
-    <div class="meta-item"><span class="meta-label">Date (UTC):</span> <span class="meta-val">2026-11-13T20:53:18+00:00</span></div>
+    <div class="meta-item"><span class="meta-label">Date (UTC):</span> <span class="meta-val">2026-11-13T21:11:02+00:00</span></div>
     <div class="meta-item"><span class="meta-label">Duration:</span> <span class="meta-val">0.00s</span></div>
     <div class="meta-item"><span class="meta-label">Harness Version:</span> <span class="meta-val">0.1.0</span></div>
   </div>
@@ -1861,7 +1861,7 @@ tbody tr:hover {
   </div>
   <div class="run-meta-grid">
     <div class="meta-item"><span class="meta-label">Trials (k):</span> <span class="meta-val">2</span></div>
-    <div class="meta-item"><span class="meta-label">Date (UTC):</span> <span class="meta-val">2026-11-13T20:53:18+00:00</span></div>
+    <div class="meta-item"><span class="meta-label">Date (UTC):</span> <span class="meta-val">2026-11-13T21:11:02+00:00</span></div>
     <div class="meta-item"><span class="meta-label">Duration:</span> <span class="meta-val">0.00s</span></div>
     <div class="meta-item"><span class="meta-label">Harness Version:</span> <span class="meta-val">0.1.0</span></div>
   </div>
