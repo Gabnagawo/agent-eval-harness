@@ -1,0 +1,102 @@
+id: api-007-batch-pipeline-remediation
+family: api
+title: Paginated service inspection and batch remediation with rate-limit retry
+prompt: >-
+  Inspect all pages of /services (page_size 2) across pages 1, 2, and 3. For any
+  service with status 'degraded':
+  - Scale /services/10 to 3 replicas with status 'active'.
+  - Scale /services/14 to 2 replicas with status 'active'.
+  Finally, record an audit event by sending a POST to /audit_events with
+  {"event": "services_remediated", "count": 2, "operator": "agent"}.
+envs:
+  api:
+    page_size: 2
+    resources:
+      services:
+        - id: "10"
+          name: auth-proxy
+          replicas: 1
+          status: degraded
+        - id: "11"
+          name: user-cache
+          replicas: 2
+          status: active
+        - id: "12"
+          name: billing-worker
+          replicas: 2
+          status: active
+        - id: "13"
+          name: notification-hub
+          replicas: 1
+          status: active
+        - id: "14"
+          name: rate-limiter
+          replicas: 1
+          status: degraded
+      audit_events: []
+seed: 407
+faults:
+  - tool: api_patch
+    calls: [1]
+    error: "HTTP 429: rate limit exceeded, retry"
+tools: [api_get, api_patch, api_post]
+max_steps: 12
+optimal_steps: 7
+expected_tools: [api_get, api_patch, api_post]
+success:
+  - path: api.resources.services."10".status
+    op: equals
+    value: active
+    description: auth-proxy status active
+  - path: api.resources.services."10".replicas
+    op: equals
+    value: 3
+    description: auth-proxy scaled to 3 replicas
+  - path: api.resources.services."14".status
+    op: equals
+    value: active
+    description: rate-limiter status active
+  - path: api.resources.services."14".replicas
+    op: equals
+    value: 2
+    description: rate-limiter scaled to 2 replicas
+  - path: api.resources.audit_events."1".event
+    op: equals
+    value: services_remediated
+    description: remediation audit record logged
+traps: [tool_error]
+reference_solution:
+  - tool: api_get
+    args:
+      path: /services
+      params: { page: 1 }
+  - tool: api_get
+    args:
+      path: /services
+      params: { page: 2 }
+  - tool: api_get
+    args:
+      path: /services
+      params: { page: 3 }
+  - tool: api_patch
+    args:
+      path: /services/10
+      body: { replicas: 3, status: active }
+  - tool: api_patch
+    args:
+      path: /services/10
+      body: { replicas: 3, status: active }
+  - tool: api_patch
+    args:
+      path: /services/14
+      body: { replicas: 2, status: active }
+  - tool: api_post
+    args:
+      path: /audit_events
+      body:
+        event: services_remediated
+        count: 2
+        operator: agent
+notes: >-
+  Multi-step REST workflow combining paginating 3 pages, handling an HTTP 429 rate limit
+  on the first PATCH attempt, updating two services, and posting an audit log entry.

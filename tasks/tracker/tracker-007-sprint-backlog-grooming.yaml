@@ -1,0 +1,106 @@
+id: tracker-007-sprint-backlog-grooming
+family: tracker
+title: Groom sprint backlog across multiple tickets
+prompt: >-
+  Please groom the sprint backlog:
+  1. Search for open issues with label 'frontend'.
+  2. For issue QA-31, assign it to dana and add the comment 'Scheduled for Sprint 14.'.
+  3. For issue QA-32, update priority to 'high' and assign it to sam.
+  4. Link issue QA-33 as duplicate_of QA-31.
+  5. Create a new tracking issue titled 'Sprint 14 Frontend Deliverables' assigned to alex with priority 'medium' and description 'Consolidated tracking for Sprint 14 frontend issues.'.
+envs:
+  tracker:
+    project: QA
+    users: [dana, alex, sam]
+    issues:
+      QA-31:
+        title: Navigation menu dropdown cutoff on tablet
+        description: Dropdown clips at 768px viewport width
+        status: open
+        priority: medium
+        assignee: null
+        labels: [frontend, responsive]
+        comments: []
+        duplicate_of: null
+      QA-32:
+        title: High latency on customer asset rendering
+        description: Large PNG assets block DOM interactive
+        status: open
+        priority: low
+        assignee: null
+        labels: [frontend, performance]
+        comments: []
+        duplicate_of: null
+      QA-33:
+        title: Tablet menu clips bottom options
+        description: Hamburger dropdown truncated
+        status: open
+        priority: medium
+        assignee: null
+        labels: [frontend]
+        comments: []
+        duplicate_of: null
+seed: 207
+tools: [tracker_search, tracker_update, tracker_comment, tracker_link_duplicate, tracker_create, tracker_get]
+max_steps: 10
+optimal_steps: 6
+expected_tools: [tracker_search, tracker_update, tracker_comment, tracker_link_duplicate, tracker_create]
+success:
+  - path: tracker.issues."QA-31".assignee
+    op: equals
+    value: dana
+    description: QA-31 assigned to dana
+  - path: tracker.issues."QA-31".comments[-1].body
+    op: contains
+    value: Scheduled for Sprint 14
+    description: scheduling comment recorded on QA-31
+  - path: tracker.issues."QA-32".priority
+    op: equals
+    value: high
+    description: QA-32 priority elevated to high
+  - path: tracker.issues."QA-32".assignee
+    op: equals
+    value: sam
+    description: QA-32 assigned to sam
+  - path: tracker.issues."QA-33".status
+    op: equals
+    value: duplicate
+    description: QA-33 marked duplicate
+  - path: tracker.issues."QA-33".duplicate_of
+    op: equals
+    value: QA-31
+    description: QA-33 linked as duplicate of QA-31
+  - path: tracker.issues."QA-34".title
+    op: equals
+    value: Sprint 14 Frontend Deliverables
+    description: tracking issue created
+traps: []
+reference_solution:
+  - tool: tracker_search
+    args:
+      status: open
+      label: frontend
+  - tool: tracker_update
+    args:
+      issue_id: QA-31
+      assignee: dana
+  - tool: tracker_comment
+    args:
+      issue_id: QA-31
+      body: Scheduled for Sprint 14.
+  - tool: tracker_update
+    args:
+      issue_id: QA-32
+      priority: high
+      assignee: sam
+  - tool: tracker_link_duplicate
+    args:
+      issue_id: QA-33
+      duplicate_of: QA-31
+  - tool: tracker_create
+    args:
+      title: Sprint 14 Frontend Deliverables
+      description: Consolidated tracking for Sprint 14 frontend issues.
+      priority: medium
+      assignee: alex
+notes: Multi-step tracker backlog grooming involving search, multiple updates, commenting, duplicate linking, and creating a tracker issue.

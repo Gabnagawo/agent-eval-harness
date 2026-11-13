@@ -56,19 +56,19 @@ def test_task_replay_and_conventions(path: Path) -> None:
 
 def test_task_suite_counts_and_distributions() -> None:
     tasks = load_tasks(TASKS_DIR)
-    assert len(tasks) == 28, f"Expected exactly 28 tasks in suite, got {len(tasks)}"
+    assert len(tasks) == 32, f"Expected exactly 32 tasks in suite, got {len(tasks)}"
 
     # Family distribution
     family_counts = Counter(t.family for t in tasks)
-    assert family_counts["files"] == 6, f"Expected 6 files tasks, got {family_counts['files']}"
-    assert family_counts["tracker"] == 6, (
-        f"Expected 6 tracker tasks, got {family_counts['tracker']}"
+    assert family_counts["files"] == 7, f"Expected 7 files tasks, got {family_counts['files']}"
+    assert family_counts["tracker"] == 7, (
+        f"Expected 7 tracker tasks, got {family_counts['tracker']}"
     )
     assert family_counts["calendar"] == 5, (
         f"Expected 5 calendar tasks, got {family_counts['calendar']}"
     )
-    assert family_counts["api"] == 6, f"Expected 6 api tasks, got {family_counts['api']}"
-    assert family_counts["triage"] == 5, f"Expected 5 triage tasks, got {family_counts['triage']}"
+    assert family_counts["api"] == 7, f"Expected 7 api tasks, got {family_counts['api']}"
+    assert family_counts["triage"] == 6, f"Expected 6 triage tasks, got {family_counts['triage']}"
 
     # Trap distribution
     trap_counts = Counter(tr for t in tasks for tr in t.traps)
@@ -83,8 +83,8 @@ def test_task_suite_counts_and_distributions() -> None:
 
     # Control group (tasks without traps)
     control_tasks = [t for t in tasks if not t.traps]
-    assert 8 <= len(control_tasks) <= 14, (
-        f"Expected approximately 10 control tasks without traps, got {len(control_tasks)}"
+    assert 8 <= len(control_tasks) <= 16, (
+        f"Expected approximately 10-14 control tasks without traps, got {len(control_tasks)}"
     )
 
     # Optimal steps difficulty range

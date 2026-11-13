@@ -1,0 +1,72 @@
+id: files-007-multi-stage-migration
+family: files
+title: Multi-stage data migration and verification
+prompt: >-
+  We are reorganizing our legacy data storage under /var/data/. Please complete the
+  following migration steps:
+  1. Search under /var/data/ for 'TENANT_ALPHA' to find the tenant config file.
+  2. Read that configuration file to determine the backup destination directory.
+  3. Read /var/data/staging/checklist.txt to identify the files to move.
+  4. Move /var/data/staging/records_2025.csv to the tenant backup directory.
+  5. Move /var/data/staging/records_2026.csv to the tenant backup directory.
+  6. Write /backup/tenants/alpha/status.txt with content 'MIGRATION_COMPLETED: 2 files moved'.
+envs:
+  files:
+    files:
+      /var/data/tenants/alpha.conf: |
+        tenant_id=TENANT_ALPHA
+        backup_dir=/backup/tenants/alpha
+        retention_days=90
+      /var/data/staging/checklist.txt: |
+        MIGRATION CHECKLIST:
+        - records_2025.csv
+        - records_2026.csv
+      /var/data/staging/records_2025.csv: "id,timestamp,value\n101,2025-12-01,45.2\n102,2025-12-02,48.1"
+      /var/data/staging/records_2026.csv: "id,timestamp,value\n201,2026-01-10,52.4\n202,2026-01-11,55.0"
+seed: 107
+tools: [files_search, files_read, files_move, files_write, files_list]
+max_steps: 10
+optimal_steps: 6
+expected_tools: [files_search, files_read, files_move, files_write]
+success:
+  - path: files.files."/backup/tenants/alpha/records_2025.csv"
+    op: exists
+    description: 2025 records moved to backup directory
+  - path: files.files."/backup/tenants/alpha/records_2026.csv"
+    op: exists
+    description: 2026 records moved to backup directory
+  - path: files.files."/var/data/staging/records_2025.csv"
+    op: absent
+    description: original 2025 records path removed
+  - path: files.files."/var/data/staging/records_2026.csv"
+    op: absent
+    description: original 2026 records path removed
+  - path: files.files."/backup/tenants/alpha/status.txt"
+    op: equals
+    value: "MIGRATION_COMPLETED: 2 files moved"
+    description: migration status recorded
+traps: []
+reference_solution:
+  - tool: files_search
+    args:
+      query: TENANT_ALPHA
+      prefix: /var/data/
+  - tool: files_read
+    args:
+      path: /var/data/tenants/alpha.conf
+  - tool: files_read
+    args:
+      path: /var/data/staging/checklist.txt
+  - tool: files_move
+    args:
+      source: /var/data/staging/records_2025.csv
+      destination: /backup/tenants/alpha/records_2025.csv
+  - tool: files_move
+    args:
+      source: /var/data/staging/records_2026.csv
+      destination: /backup/tenants/alpha/records_2026.csv
+  - tool: files_write
+    args:
+      path: /backup/tenants/alpha/status.txt
+      content: "MIGRATION_COMPLETED: 2 files moved"
+notes: Multi-step file pipeline requiring search, read configuration and checklist, two file moves, and writing status.
