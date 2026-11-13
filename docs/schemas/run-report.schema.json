@@ -1,0 +1,720 @@
+{
+  "$defs": {
+    "Aggregate": {
+      "description": "Metrics over a set of trials (one task, one family, one trap, or the whole run).",
+      "properties": {
+        "tasks": {
+          "title": "Tasks",
+          "type": "integer"
+        },
+        "trials": {
+          "title": "Trials",
+          "type": "integer"
+        },
+        "success_rate": {
+          "title": "Success Rate",
+          "type": "number"
+        },
+        "pass_k": {
+          "title": "Pass K",
+          "type": "number"
+        },
+        "goal_met_rate": {
+          "title": "Goal Met Rate",
+          "type": "number"
+        },
+        "forbidden_action_rate": {
+          "title": "Forbidden Action Rate",
+          "type": "number"
+        },
+        "valid_call_rate": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Valid Call Rate"
+        },
+        "tool_precision": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Tool Precision"
+        },
+        "tool_recall": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Tool Recall"
+        },
+        "mean_steps": {
+          "title": "Mean Steps",
+          "type": "number"
+        },
+        "mean_step_ratio": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Mean Step Ratio"
+        },
+        "blocked_calls": {
+          "title": "Blocked Calls",
+          "type": "integer"
+        },
+        "mean_llm_calls": {
+          "title": "Mean Llm Calls",
+          "type": "number"
+        },
+        "prompt_tokens": {
+          "title": "Prompt Tokens",
+          "type": "integer"
+        },
+        "completion_tokens": {
+          "title": "Completion Tokens",
+          "type": "integer"
+        },
+        "mean_latency_s": {
+          "title": "Mean Latency S",
+          "type": "number"
+        },
+        "total_latency_s": {
+          "title": "Total Latency S",
+          "type": "number"
+        }
+      },
+      "required": [
+        "tasks",
+        "trials",
+        "success_rate",
+        "pass_k",
+        "goal_met_rate",
+        "forbidden_action_rate",
+        "valid_call_rate",
+        "tool_precision",
+        "tool_recall",
+        "mean_steps",
+        "mean_step_ratio",
+        "blocked_calls",
+        "mean_llm_calls",
+        "prompt_tokens",
+        "completion_tokens",
+        "mean_latency_s",
+        "total_latency_s"
+      ],
+      "title": "Aggregate",
+      "type": "object"
+    },
+    "Check": {
+      "additionalProperties": false,
+      "description": "One deterministic assertion.\n\nIn ``success`` the ``path`` is a JMESPath expression over the final world snapshot\n(``{\"<env kind>\": <env snapshot>, ...}``). In ``answer`` the ``path`` is omitted and the\ncheck applies to the agent's final answer text.",
+      "properties": {
+        "op": {
+          "enum": [
+            "exists",
+            "absent",
+            "equals",
+            "not_equals",
+            "contains",
+            "not_contains",
+            "matches",
+            "length",
+            "gte",
+            "lte",
+            "in"
+          ],
+          "title": "Op",
+          "type": "string"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        },
+        "value": {
+          "default": null,
+          "title": "Value"
+        },
+        "ignore_case": {
+          "default": false,
+          "title": "Ignore Case",
+          "type": "boolean"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        }
+      },
+      "required": [
+        "op"
+      ],
+      "title": "Check",
+      "type": "object"
+    },
+    "CheckResult": {
+      "properties": {
+        "check": {
+          "$ref": "#/$defs/Check"
+        },
+        "passed": {
+          "title": "Passed",
+          "type": "boolean"
+        },
+        "actual": {
+          "default": null,
+          "title": "Actual"
+        }
+      },
+      "required": [
+        "check",
+        "passed"
+      ],
+      "title": "CheckResult",
+      "type": "object"
+    },
+    "RunInfo": {
+      "properties": {
+        "agent": {
+          "title": "Agent",
+          "type": "string"
+        },
+        "provider": {
+          "title": "Provider",
+          "type": "string"
+        },
+        "model": {
+          "title": "Model",
+          "type": "string"
+        },
+        "k": {
+          "title": "K",
+          "type": "integer"
+        },
+        "started_at": {
+          "title": "Started At",
+          "type": "string"
+        },
+        "duration_s": {
+          "title": "Duration S",
+          "type": "number"
+        },
+        "harness_version": {
+          "title": "Harness Version",
+          "type": "string"
+        },
+        "options": {
+          "additionalProperties": true,
+          "title": "Options",
+          "type": "object"
+        },
+        "client_stats": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Client Stats",
+          "type": "object"
+        }
+      },
+      "required": [
+        "agent",
+        "provider",
+        "model",
+        "k",
+        "started_at",
+        "duration_s",
+        "harness_version"
+      ],
+      "title": "RunInfo",
+      "type": "object"
+    },
+    "Step": {
+      "description": "One tool call the agent attempted, and what happened to it.",
+      "properties": {
+        "index": {
+          "title": "Index",
+          "type": "integer"
+        },
+        "tool": {
+          "title": "Tool",
+          "type": "string"
+        },
+        "arguments": {
+          "additionalProperties": true,
+          "title": "Arguments",
+          "type": "object"
+        },
+        "known_tool": {
+          "default": true,
+          "title": "Known Tool",
+          "type": "boolean"
+        },
+        "valid_args": {
+          "default": true,
+          "title": "Valid Args",
+          "type": "boolean"
+        },
+        "validation_error": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Validation Error"
+        },
+        "blocked": {
+          "default": false,
+          "title": "Blocked",
+          "type": "boolean"
+        },
+        "block_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Block Reason"
+        },
+        "fault": {
+          "default": false,
+          "title": "Fault",
+          "type": "boolean"
+        },
+        "executed": {
+          "default": false,
+          "title": "Executed",
+          "type": "boolean"
+        },
+        "forbidden": {
+          "default": false,
+          "title": "Forbidden",
+          "type": "boolean"
+        },
+        "forbidden_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Forbidden Reason"
+        },
+        "ok": {
+          "default": false,
+          "title": "Ok",
+          "type": "boolean"
+        },
+        "output": {
+          "default": "",
+          "title": "Output",
+          "type": "string"
+        }
+      },
+      "required": [
+        "index",
+        "tool"
+      ],
+      "title": "Step",
+      "type": "object"
+    },
+    "TaskResult": {
+      "properties": {
+        "task_id": {
+          "title": "Task Id",
+          "type": "string"
+        },
+        "family": {
+          "title": "Family",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "prompt": {
+          "title": "Prompt",
+          "type": "string"
+        },
+        "traps": {
+          "items": {
+            "enum": [
+              "ambiguous",
+              "tool_error",
+              "prompt_injection",
+              "destructive"
+            ],
+            "type": "string"
+          },
+          "title": "Traps",
+          "type": "array"
+        },
+        "optimal_steps": {
+          "title": "Optimal Steps",
+          "type": "integer"
+        },
+        "max_steps": {
+          "title": "Max Steps",
+          "type": "integer"
+        },
+        "expected_tools": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Expected Tools",
+          "type": "array"
+        },
+        "aggregate": {
+          "$ref": "#/$defs/Aggregate"
+        },
+        "trials": {
+          "items": {
+            "$ref": "#/$defs/TrialResult"
+          },
+          "title": "Trials",
+          "type": "array"
+        }
+      },
+      "required": [
+        "task_id",
+        "family",
+        "title",
+        "prompt",
+        "optimal_steps",
+        "max_steps",
+        "aggregate",
+        "trials"
+      ],
+      "title": "TaskResult",
+      "type": "object"
+    },
+    "Trajectory": {
+      "description": "Everything one agent did in one trial of one task.",
+      "properties": {
+        "task_id": {
+          "title": "Task Id",
+          "type": "string"
+        },
+        "agent": {
+          "title": "Agent",
+          "type": "string"
+        },
+        "trial": {
+          "title": "Trial",
+          "type": "integer"
+        },
+        "steps": {
+          "items": {
+            "$ref": "#/$defs/Step"
+          },
+          "title": "Steps",
+          "type": "array"
+        },
+        "plan": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Plan"
+        },
+        "final_answer": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Final Answer"
+        },
+        "stop_reason": {
+          "default": "answer",
+          "enum": [
+            "answer",
+            "max_steps",
+            "llm_error",
+            "agent_error"
+          ],
+          "title": "Stop Reason",
+          "type": "string"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Error"
+        },
+        "llm_calls": {
+          "default": 0,
+          "title": "Llm Calls",
+          "type": "integer"
+        },
+        "prompt_tokens": {
+          "default": 0,
+          "title": "Prompt Tokens",
+          "type": "integer"
+        },
+        "completion_tokens": {
+          "default": 0,
+          "title": "Completion Tokens",
+          "type": "integer"
+        },
+        "latency_s": {
+          "default": 0.0,
+          "title": "Latency S",
+          "type": "number"
+        }
+      },
+      "required": [
+        "task_id",
+        "agent",
+        "trial"
+      ],
+      "title": "Trajectory",
+      "type": "object"
+    },
+    "TrialMetrics": {
+      "description": "Numbers for one trial. Rates that are undefined for the trial are ``None``.",
+      "properties": {
+        "success": {
+          "title": "Success",
+          "type": "boolean"
+        },
+        "goal_met": {
+          "title": "Goal Met",
+          "type": "boolean"
+        },
+        "safe": {
+          "title": "Safe",
+          "type": "boolean"
+        },
+        "steps": {
+          "title": "Steps",
+          "type": "integer"
+        },
+        "valid_calls": {
+          "title": "Valid Calls",
+          "type": "integer"
+        },
+        "invalid_calls": {
+          "title": "Invalid Calls",
+          "type": "integer"
+        },
+        "valid_call_rate": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Valid Call Rate"
+        },
+        "tool_precision": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Tool Precision"
+        },
+        "tool_recall": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Tool Recall"
+        },
+        "step_ratio": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Step Ratio"
+        },
+        "forbidden_actions": {
+          "title": "Forbidden Actions",
+          "type": "integer"
+        },
+        "blocked_calls": {
+          "title": "Blocked Calls",
+          "type": "integer"
+        },
+        "llm_calls": {
+          "title": "Llm Calls",
+          "type": "integer"
+        },
+        "prompt_tokens": {
+          "title": "Prompt Tokens",
+          "type": "integer"
+        },
+        "completion_tokens": {
+          "title": "Completion Tokens",
+          "type": "integer"
+        },
+        "latency_s": {
+          "title": "Latency S",
+          "type": "number"
+        }
+      },
+      "required": [
+        "success",
+        "goal_met",
+        "safe",
+        "steps",
+        "valid_calls",
+        "invalid_calls",
+        "valid_call_rate",
+        "tool_precision",
+        "tool_recall",
+        "step_ratio",
+        "forbidden_actions",
+        "blocked_calls",
+        "llm_calls",
+        "prompt_tokens",
+        "completion_tokens",
+        "latency_s"
+      ],
+      "title": "TrialMetrics",
+      "type": "object"
+    },
+    "TrialResult": {
+      "properties": {
+        "trial": {
+          "title": "Trial",
+          "type": "integer"
+        },
+        "metrics": {
+          "$ref": "#/$defs/TrialMetrics"
+        },
+        "checks": {
+          "items": {
+            "$ref": "#/$defs/CheckResult"
+          },
+          "title": "Checks",
+          "type": "array"
+        },
+        "answer_checks": {
+          "items": {
+            "$ref": "#/$defs/CheckResult"
+          },
+          "title": "Answer Checks",
+          "type": "array"
+        },
+        "trajectory": {
+          "$ref": "#/$defs/Trajectory"
+        }
+      },
+      "required": [
+        "trial",
+        "metrics",
+        "trajectory"
+      ],
+      "title": "TrialResult",
+      "type": "object"
+    }
+  },
+  "description": "The JSON report of one run: one agent, a set of tasks, k trials each.",
+  "properties": {
+    "schema_version": {
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "run": {
+      "$ref": "#/$defs/RunInfo"
+    },
+    "summary": {
+      "$ref": "#/$defs/Aggregate"
+    },
+    "families": {
+      "additionalProperties": {
+        "$ref": "#/$defs/Aggregate"
+      },
+      "title": "Families",
+      "type": "object"
+    },
+    "traps": {
+      "additionalProperties": {
+        "$ref": "#/$defs/Aggregate"
+      },
+      "title": "Traps",
+      "type": "object"
+    },
+    "tasks": {
+      "items": {
+        "$ref": "#/$defs/TaskResult"
+      },
+      "title": "Tasks",
+      "type": "array"
+    }
+  },
+  "required": [
+    "run",
+    "summary",
+    "families",
+    "traps",
+    "tasks"
+  ],
+  "title": "RunReport",
+  "type": "object"
+}

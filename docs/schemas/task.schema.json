@@ -1,0 +1,276 @@
+{
+  "$defs": {
+    "Check": {
+      "additionalProperties": false,
+      "description": "One deterministic assertion.\n\nIn ``success`` the ``path`` is a JMESPath expression over the final world snapshot\n(``{\"<env kind>\": <env snapshot>, ...}``). In ``answer`` the ``path`` is omitted and the\ncheck applies to the agent's final answer text.",
+      "properties": {
+        "op": {
+          "enum": [
+            "exists",
+            "absent",
+            "equals",
+            "not_equals",
+            "contains",
+            "not_contains",
+            "matches",
+            "length",
+            "gte",
+            "lte",
+            "in"
+          ],
+          "title": "Op",
+          "type": "string"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        },
+        "value": {
+          "default": null,
+          "title": "Value"
+        },
+        "ignore_case": {
+          "default": false,
+          "title": "Ignore Case",
+          "type": "boolean"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        }
+      },
+      "required": [
+        "op"
+      ],
+      "title": "Check",
+      "type": "object"
+    },
+    "Fault": {
+      "additionalProperties": false,
+      "description": "A scripted tool failure: the Nth call(s) to ``tool`` (1-based) return ``error``.\n\nThe call does not reach the environment, so a retry of the same call succeeds.",
+      "properties": {
+        "tool": {
+          "title": "Tool",
+          "type": "string"
+        },
+        "calls": {
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1,
+          "title": "Calls",
+          "type": "array"
+        },
+        "error": {
+          "title": "Error",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "calls",
+        "error"
+      ],
+      "title": "Fault",
+      "type": "object"
+    },
+    "ForbiddenAction": {
+      "additionalProperties": false,
+      "description": "A tool call the agent must not make.\n\n``args`` narrows the match: string patterns use shell wildcards (``/prod/*``), any other\nvalue must be equal. With no ``args`` every call to ``tool`` is forbidden.",
+      "properties": {
+        "tool": {
+          "title": "Tool",
+          "type": "string"
+        },
+        "args": {
+          "additionalProperties": true,
+          "title": "Args",
+          "type": "object"
+        },
+        "reason": {
+          "default": "",
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool"
+      ],
+      "title": "ForbiddenAction",
+      "type": "object"
+    },
+    "ReferenceCall": {
+      "additionalProperties": false,
+      "description": "One tool call of a task's reference solution.",
+      "properties": {
+        "tool": {
+          "title": "Tool",
+          "type": "string"
+        },
+        "args": {
+          "additionalProperties": true,
+          "title": "Args",
+          "type": "object"
+        }
+      },
+      "required": [
+        "tool"
+      ],
+      "title": "ReferenceCall",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A reproducible task. One YAML file per task under ``tasks/<family>/``.",
+  "properties": {
+    "id": {
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "title": "Id",
+      "type": "string"
+    },
+    "family": {
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "title": "Family",
+      "type": "string"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    },
+    "prompt": {
+      "title": "Prompt",
+      "type": "string"
+    },
+    "envs": {
+      "additionalProperties": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "minProperties": 1,
+      "title": "Envs",
+      "type": "object"
+    },
+    "seed": {
+      "default": 0,
+      "title": "Seed",
+      "type": "integer"
+    },
+    "faults": {
+      "items": {
+        "$ref": "#/$defs/Fault"
+      },
+      "title": "Faults",
+      "type": "array"
+    },
+    "tools": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Tools"
+    },
+    "max_steps": {
+      "minimum": 1,
+      "title": "Max Steps",
+      "type": "integer"
+    },
+    "optimal_steps": {
+      "minimum": 0,
+      "title": "Optimal Steps",
+      "type": "integer"
+    },
+    "expected_tools": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Expected Tools",
+      "type": "array"
+    },
+    "success": {
+      "items": {
+        "$ref": "#/$defs/Check"
+      },
+      "title": "Success",
+      "type": "array"
+    },
+    "answer": {
+      "items": {
+        "$ref": "#/$defs/Check"
+      },
+      "title": "Answer",
+      "type": "array"
+    },
+    "forbidden": {
+      "items": {
+        "$ref": "#/$defs/ForbiddenAction"
+      },
+      "title": "Forbidden",
+      "type": "array"
+    },
+    "traps": {
+      "items": {
+        "enum": [
+          "ambiguous",
+          "tool_error",
+          "prompt_injection",
+          "destructive"
+        ],
+        "type": "string"
+      },
+      "title": "Traps",
+      "type": "array"
+    },
+    "reference_solution": {
+      "items": {
+        "$ref": "#/$defs/ReferenceCall"
+      },
+      "title": "Reference Solution",
+      "type": "array"
+    },
+    "reference_answer": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reference Answer"
+    },
+    "notes": {
+      "default": "",
+      "title": "Notes",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "family",
+    "title",
+    "prompt",
+    "envs",
+    "max_steps",
+    "optimal_steps"
+  ],
+  "title": "TaskSpec",
+  "type": "object"
+}
