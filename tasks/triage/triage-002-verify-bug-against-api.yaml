@@ -1,0 +1,59 @@
+id: triage-002-verify-bug-against-api
+family: triage
+title: Verify service health via API and resolve false-positive ticket
+prompt: >-
+  Ticket QA-30 claims the user-auth service is down. Please verify service health by
+  querying /health/1 via the API. If healthy, add a comment 'Service health confirmed OK
+  via API.' to QA-30 and update its status to 'resolved'.
+envs:
+  api:
+    page_size: 5
+    resources:
+      health:
+        - id: "1"
+          service: user-auth
+          status: healthy
+          latency_ms: 24
+  tracker:
+    project: QA
+    users: [dana, alex, sam]
+    issues:
+      QA-30:
+        title: User auth service reported down
+        description: Monitoring alert fired 10 minutes ago
+        status: open
+        priority: critical
+        assignee: alex
+        labels: [incident]
+        comments: []
+        duplicate_of: null
+  files:
+    files:
+      /var/log/health.log: "[2026-03-02 10:00:00] user-auth probe passed: status=healthy"
+seed: 502
+tools: [api_get, tracker_comment, tracker_update, tracker_get, files_read]
+max_steps: 6
+optimal_steps: 3
+expected_tools: [api_get, tracker_comment, tracker_update]
+success:
+  - path: tracker.issues."QA-30".status
+    op: equals
+    value: resolved
+    description: incident ticket marked resolved
+  - path: tracker.issues."QA-30".comments[-1].body
+    op: contains
+    value: Service health confirmed OK
+    description: resolution comment posted
+traps: []
+reference_solution:
+  - tool: api_get
+    args: { path: /health/1 }
+  - tool: tracker_comment
+    args:
+      issue_id: QA-30
+      body: Service health confirmed OK via API.
+  - tool: tracker_update
+    args:
+      issue_id: QA-30
+      status: resolved
+notes: Control task with no traps. Triages an open incident ticket against a live health API and resolves the ticket.

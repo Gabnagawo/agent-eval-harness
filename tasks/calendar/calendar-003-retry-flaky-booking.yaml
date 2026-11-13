@@ -1,0 +1,54 @@
+id: calendar-003-retry-flaky-booking
+family: calendar
+title: Book architecture sync with retry on lock timeout
+prompt: >-
+  Please create a new calendar event 'Architecture Sync' for attendees dana and sam
+  on 2026-03-05 from 10:00 to 11:00 in Room C.
+envs:
+  calendar:
+    now: "2026-03-05T08:00"
+    people:
+      dana:
+        working_hours: ["09:00", "17:00"]
+      sam:
+        working_hours: ["09:00", "17:00"]
+    events: {}
+seed: 303
+faults:
+  - tool: calendar_create
+    calls: [1]
+    error: "503 Calendar lock timeout, please retry"
+tools: [calendar_create, calendar_get, calendar_list]
+max_steps: 5
+optimal_steps: 2
+expected_tools: [calendar_create]
+success:
+  - path: calendar.events."evt-1".title
+    op: equals
+    value: Architecture Sync
+    description: event created with correct title
+  - path: calendar.events."evt-1".start
+    op: equals
+    value: "2026-03-05T10:00"
+    description: event start time matches
+  - path: calendar.events."evt-1".end
+    op: equals
+    value: "2026-03-05T11:00"
+    description: event end time matches
+traps: [tool_error]
+reference_solution:
+  - tool: calendar_create
+    args:
+      title: Architecture Sync
+      start: "2026-03-05T10:00"
+      end: "2026-03-05T11:00"
+      attendees: [dana, sam]
+      location: Room C
+  - tool: calendar_create
+    args:
+      title: Architecture Sync
+      start: "2026-03-05T10:00"
+      end: "2026-03-05T11:00"
+      attendees: [dana, sam]
+      location: Room C
+notes: The first calendar_create call fails with a 503 lock timeout. Retrying the call creates evt-1.

@@ -1,0 +1,39 @@
+id: triage-003-flaky-log-fetch-triage
+family: triage
+title: Extract error code from gateway log with retry on network error
+prompt: >-
+  Please check the gateway log in /logs/gateway.log and tell me which HTTP status
+  code is logged for upstream timeouts. Answer with just the numeric status code.
+envs:
+  files:
+    files:
+      /logs/gateway.log: |
+        [2026-03-02 11:15:00] [GATEWAY] Upstream backend failed to respond within 5000ms.
+        [2026-03-02 11:15:00] [ERROR] Returning HTTP 502 Bad Gateway to client.
+  tracker:
+    project: QA
+    users: [dana, sam]
+    issues: {}
+  api:
+    page_size: 5
+    resources: {}
+seed: 503
+faults:
+  - tool: files_read
+    calls: [1]
+    error: "503 Network file share reconnecting, please retry"
+tools: [files_read, tracker_search, api_get]
+max_steps: 5
+optimal_steps: 2
+expected_tools: [files_read]
+answer:
+  - op: contains
+    value: "502"
+traps: [tool_error]
+reference_solution:
+  - tool: files_read
+    args: { path: /logs/gateway.log }
+  - tool: files_read
+    args: { path: /logs/gateway.log }
+reference_answer: "502"
+notes: The first files_read attempt fails with a 503 network error; retrying reads the file to find HTTP 502.

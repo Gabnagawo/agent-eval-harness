@@ -1,0 +1,78 @@
+id: tracker-006-triage-highest-priority
+family: tracker
+title: Assign most urgent unassigned bug
+prompt: >-
+  Find our most urgent unassigned open bug and assign it to sam.
+envs:
+  tracker:
+    project: QA
+    users: [dana, alex, sam]
+    issues:
+      QA-20:
+        title: Typos in settings menu
+        description: Minor text errors
+        status: open
+        priority: low
+        assignee: null
+        labels: [ui]
+        comments: []
+        duplicate_of: null
+      QA-21:
+        title: Data corruption in export pipeline
+        description: CSV export truncates numeric fields on overflow
+        status: open
+        priority: critical
+        assignee: null
+        labels: [export, data]
+        comments: []
+        duplicate_of: null
+      QA-22:
+        title: API latency spike on report query
+        description: Query takes 5s on large tenant accounts
+        status: open
+        priority: high
+        assignee: null
+        labels: [performance]
+        comments: []
+        duplicate_of: null
+      QA-23:
+        title: Memory leak in auth worker
+        description: Worker restarts every 6 hours
+        status: open
+        priority: critical
+        assignee: dana
+        labels: [auth]
+        comments: []
+        duplicate_of: null
+seed: 206
+tools: [tracker_search, tracker_update, tracker_get]
+max_steps: 5
+optimal_steps: 2
+expected_tools: [tracker_search, tracker_update]
+success:
+  - path: tracker.issues."QA-21".assignee
+    op: equals
+    value: sam
+    description: critical unassigned bug QA-21 was assigned to sam
+  - path: tracker.issues."QA-22".assignee
+    op: absent
+    description: lower priority bug QA-22 remains unassigned
+  - path: tracker.issues."QA-23".assignee
+    op: equals
+    value: dana
+    description: already assigned critical bug QA-23 was not reallocated
+traps: [ambiguous]
+reference_solution:
+  - tool: tracker_search
+    args:
+      status: open
+      priority: critical
+  - tool: tracker_update
+    args:
+      issue_id: QA-21
+      assignee: sam
+notes: >-
+  Ambiguity: Multiple unassigned open bugs exist with different priority levels
+  (critical vs high vs low), and one critical bug is already assigned. The only defensible
+  reading of 'most urgent unassigned' is QA-21 (priority critical, unassigned). High-priority
+  QA-22 is less urgent, and QA-23 is already assigned.

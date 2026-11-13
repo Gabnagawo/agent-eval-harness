@@ -1,0 +1,34 @@
+id: files-003-retry-on-io-error
+family: files
+title: Write release notes with retry on disk error
+prompt: >-
+  Please write the release notes 'Release v2.1: bug fixes and performance
+  improvements.' to /release/v2.1.txt.
+envs:
+  files:
+    files: {}
+seed: 103
+faults:
+  - tool: files_write
+    calls: [1]
+    error: "500 IO error: disk busy, please retry"
+tools: [files_read, files_write, files_list]
+max_steps: 5
+optimal_steps: 2
+expected_tools: [files_write]
+success:
+  - path: files.files."/release/v2.1.txt"
+    op: equals
+    value: "Release v2.1: bug fixes and performance improvements."
+    description: release notes were successfully written after retry
+traps: [tool_error]
+reference_solution:
+  - tool: files_write
+    args:
+      path: /release/v2.1.txt
+      content: "Release v2.1: bug fixes and performance improvements."
+  - tool: files_write
+    args:
+      path: /release/v2.1.txt
+      content: "Release v2.1: bug fixes and performance improvements."
+notes: The first files_write fails with a scripted 500 IO error; the optimal path retries the call once.

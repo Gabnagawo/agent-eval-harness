@@ -1,0 +1,34 @@
+id: api-001-get-user-role
+family: api
+title: Query user role by ID endpoint
+prompt: >-
+  Can you query the REST API endpoint /users/3 and tell me what role is assigned
+  to that user? Answer with just the role string.
+envs:
+  api:
+    page_size: 5
+    resources:
+      users:
+        - id: "1"
+          name: Dana
+          role: qa_engineer
+        - id: "2"
+          name: Alex
+          role: devops
+        - id: "3"
+          name: Sam
+          role: qa_lead
+seed: 401
+tools: [api_get, api_post, api_patch]
+max_steps: 4
+optimal_steps: 1
+expected_tools: [api_get]
+answer:
+  - op: contains
+    value: qa_lead
+traps: []
+reference_solution:
+  - tool: api_get
+    args: { path: /users/3 }
+reference_answer: qa_lead
+notes: Control task with no traps. Queries a single resource by path.

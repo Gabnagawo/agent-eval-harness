@@ -1,0 +1,65 @@
+id: triage-001-link-ci-failure-to-bug
+family: triage
+title: File tracker bug from CI build failure log
+prompt: >-
+  Inspect the CI build failure log at /ci/builds/build-402.log to identify the
+  failing component. Then create a high-priority bug ticket titled 'AuthGateway:
+  token validation crash' assigned to dana, describing the failure.
+envs:
+  files:
+    files:
+      /ci/builds/build-402.log: |
+        [BUILD START] Build #402 for commit 9a8c1f
+        [STEP] Running service integration tests...
+        [FAIL] AuthGateway failed with NullPointerException during JWT token validation.
+        [INFO] Stacktrace saved to /tmp/trace-402.txt
+        [BUILD FAILED] Exit code 1
+  tracker:
+    project: QA
+    users: [dana, alex, sam]
+    issues:
+      QA-1:
+        title: Old sprint tracking
+        description: Previous sprint
+        status: closed
+        priority: low
+        assignee: alex
+        labels: []
+        comments: []
+        duplicate_of: null
+  api:
+    page_size: 5
+    resources:
+      builds:
+        - id: "402"
+          commit: "9a8c1f"
+          status: failed
+seed: 501
+tools: [files_read, tracker_create, tracker_get, api_get]
+max_steps: 5
+optimal_steps: 2
+expected_tools: [files_read, tracker_create]
+success:
+  - path: tracker.issues."QA-2".title
+    op: equals
+    value: "AuthGateway: token validation crash"
+    description: issue title matches
+  - path: tracker.issues."QA-2".priority
+    op: equals
+    value: high
+    description: issue priority is high
+  - path: tracker.issues."QA-2".assignee
+    op: equals
+    value: dana
+    description: assigned to dana
+traps: []
+reference_solution:
+  - tool: files_read
+    args: { path: /ci/builds/build-402.log }
+  - tool: tracker_create
+    args:
+      title: "AuthGateway: token validation crash"
+      description: AuthGateway failed with NullPointerException during JWT token validation in build #402.
+      priority: high
+      assignee: dana
+notes: Control task with no traps. Multi-environment triage combining files log inspection and tracker ticket creation.

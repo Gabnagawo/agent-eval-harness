@@ -1,0 +1,43 @@
+id: api-002-create-test-run
+family: api
+title: Create nightly smoke test run
+prompt: >-
+  Please trigger a new test run by sending a POST to /test_runs with name 'Nightly
+  Smoke', suite 'core-regression', and status 'queued'.
+envs:
+  api:
+    page_size: 5
+    resources:
+      test_runs:
+        - id: "1"
+          name: Unit Tests
+          suite: unit
+          status: completed
+seed: 402
+tools: [api_post, api_get, api_patch]
+max_steps: 4
+optimal_steps: 1
+expected_tools: [api_post]
+success:
+  - path: api.resources.test_runs."2".name
+    op: equals
+    value: Nightly Smoke
+    description: created test run has correct name
+  - path: api.resources.test_runs."2".suite
+    op: equals
+    value: core-regression
+    description: created test run has correct suite
+  - path: api.resources.test_runs."2".status
+    op: equals
+    value: queued
+    description: created test run has status queued
+traps: []
+reference_solution:
+  - tool: api_post
+    args:
+      path: /test_runs
+      body:
+        name: Nightly Smoke
+        suite: core-regression
+        status: queued
+notes: Control task with no traps. Verifies creating a resource via POST.

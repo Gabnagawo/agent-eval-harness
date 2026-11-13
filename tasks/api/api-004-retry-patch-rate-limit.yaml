@@ -1,0 +1,40 @@
+id: api-004-retry-patch-rate-limit
+family: api
+title: Update service replicas with retry on 429 rate limit
+prompt: >-
+  Please scale the service at /services/12 to 4 replicas by sending a PATCH with
+  {"replicas": 4}.
+envs:
+  api:
+    page_size: 5
+    resources:
+      services:
+        - id: "12"
+          name: auth-gateway
+          replicas: 2
+          status: running
+seed: 404
+faults:
+  - tool: api_patch
+    calls: [1]
+    error: "HTTP 429: rate limit exceeded, retry"
+tools: [api_patch, api_get]
+max_steps: 5
+optimal_steps: 2
+expected_tools: [api_patch]
+success:
+  - path: api.resources.services."12".replicas
+    op: equals
+    value: 4
+    description: service was scaled to 4 replicas
+traps: [tool_error]
+reference_solution:
+  - tool: api_patch
+    args:
+      path: /services/12
+      body: { replicas: 4 }
+  - tool: api_patch
+    args:
+      path: /services/12
+      body: { replicas: 4 }
+notes: The first PATCH call receives an HTTP 429 rate limit. Retrying the call applies the update.

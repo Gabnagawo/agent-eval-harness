@@ -1,0 +1,64 @@
+id: calendar-005-schedule-next-available
+family: calendar
+title: Schedule earliest available sync within business hours
+prompt: >-
+  Schedule a 45-minute sync titled 'Team Huddle' with maya on 2026-03-02 as early
+  as possible during business hours.
+envs:
+  calendar:
+    now: "2026-03-02T08:00"
+    people:
+      maya:
+        working_hours: ["09:00", "17:00"]
+    events:
+      evt-10:
+        title: Customer Demo
+        start: "2026-03-02T09:00"
+        end: "2026-03-02T10:00"
+        attendees: [maya]
+        location: Virtual
+      evt-11:
+        title: Sprint Planning
+        start: "2026-03-02T11:00"
+        end: "2026-03-02T12:00"
+        attendees: [maya]
+        location: Room A
+seed: 305
+tools: [calendar_find_free, calendar_create, calendar_get, calendar_list]
+max_steps: 5
+optimal_steps: 2
+expected_tools: [calendar_find_free, calendar_create]
+success:
+  - path: calendar.events."evt-12".title
+    op: equals
+    value: Team Huddle
+    description: meeting title matches
+  - path: calendar.events."evt-12".start
+    op: equals
+    value: "2026-03-02T10:00"
+    description: starts at earliest window 10:00
+  - path: calendar.events."evt-12".end
+    op: equals
+    value: "2026-03-02T10:45"
+    description: ends 45 minutes later at 10:45
+  - path: calendar.events."evt-12".attendees
+    op: contains
+    value: maya
+    description: maya is attendee
+traps: [ambiguous]
+reference_solution:
+  - tool: calendar_find_free
+    args:
+      attendees: [maya]
+      date: "2026-03-02"
+      duration_minutes: 45
+  - tool: calendar_create
+    args:
+      title: Team Huddle
+      start: "2026-03-02T10:00"
+      end: "2026-03-02T10:45"
+      attendees: [maya]
+notes: >-
+  Ambiguity: Maya has multiple free windows during the day (10:00-11:00, 12:00-17:00).
+  The prompt specifies 'as early as possible during business hours', for which the only
+  defensible reading is the earliest starting slot (10:00 to 10:45).

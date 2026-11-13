@@ -1,0 +1,68 @@
+id: calendar-001-schedule-1on1
+family: calendar
+title: Find free slot and schedule 1-on-1 meeting
+prompt: >-
+  Please check the schedule for dana and alex on 2026-03-03, find the first free
+  30-minute window between 09:00 and 17:00, and book 'Dana / Alex 1:1' in Meeting Room B.
+envs:
+  calendar:
+    now: "2026-03-03T08:30"
+    people:
+      dana:
+        working_hours: ["09:00", "17:00"]
+      alex:
+        working_hours: ["09:00", "17:00"]
+    events:
+      evt-1:
+        title: Morning Standup
+        start: "2026-03-03T09:00"
+        end: "2026-03-03T09:30"
+        attendees: [dana, alex]
+        location: Zoom
+      evt-2:
+        title: Product Review
+        start: "2026-03-03T09:30"
+        end: "2026-03-03T10:30"
+        attendees: [dana]
+        location: Room A
+seed: 301
+tools: [calendar_find_free, calendar_create, calendar_list, calendar_get]
+max_steps: 5
+optimal_steps: 2
+expected_tools: [calendar_find_free, calendar_create]
+success:
+  - path: calendar.events."evt-3".title
+    op: equals
+    value: "Dana / Alex 1:1"
+    description: meeting title matches
+  - path: calendar.events."evt-3".start
+    op: equals
+    value: "2026-03-03T10:30"
+    description: meeting starts at 10:30
+  - path: calendar.events."evt-3".end
+    op: equals
+    value: "2026-03-03T11:00"
+    description: meeting ends at 11:00
+  - path: calendar.events."evt-3".attendees
+    op: contains
+    value: dana
+    description: dana is attendee
+  - path: calendar.events."evt-3".attendees
+    op: contains
+    value: alex
+    description: alex is attendee
+traps: []
+reference_solution:
+  - tool: calendar_find_free
+    args:
+      attendees: [dana, alex]
+      date: "2026-03-03"
+      duration_minutes: 30
+  - tool: calendar_create
+    args:
+      title: "Dana / Alex 1:1"
+      start: "2026-03-03T10:30"
+      end: "2026-03-03T11:00"
+      attendees: [dana, alex]
+      location: Meeting Room B
+notes: Control task with no traps. Finds the first available slot and schedules a 1:1 meeting.

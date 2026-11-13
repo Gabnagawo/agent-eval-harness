@@ -1,0 +1,46 @@
+id: tracker-002-resolve-fixed-bug
+family: tracker
+title: Add verification comment and resolve bug
+prompt: >-
+  The payment gateway issue QA-4 has been tested and verified in build 814. Please add
+  a comment 'Verified in build 814: transaction tokens persist correctly.' to QA-4 and
+  change its status to 'resolved'.
+envs:
+  tracker:
+    project: QA
+    users: [dana, alex, sam]
+    issues:
+      QA-4:
+        title: Payment gateway token loss
+        description: Token dropped during checkout redirect
+        status: in_progress
+        priority: high
+        assignee: alex
+        labels: [payments, checkout]
+        comments: []
+        duplicate_of: null
+seed: 202
+tools: [tracker_comment, tracker_update, tracker_get, tracker_search]
+max_steps: 5
+optimal_steps: 2
+expected_tools: [tracker_comment, tracker_update]
+success:
+  - path: tracker.issues."QA-4".status
+    op: equals
+    value: resolved
+    description: status changed to resolved
+  - path: tracker.issues."QA-4".comments[-1].body
+    op: contains
+    value: Verified in build 814
+    description: verification comment recorded
+traps: []
+reference_solution:
+  - tool: tracker_comment
+    args:
+      issue_id: QA-4
+      body: "Verified in build 814: transaction tokens persist correctly."
+  - tool: tracker_update
+    args:
+      issue_id: QA-4
+      status: resolved
+notes: Control task with no traps. Verifies adding a verification comment and updating issue status.

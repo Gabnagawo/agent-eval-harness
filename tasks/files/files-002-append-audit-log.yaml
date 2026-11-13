@@ -1,0 +1,28 @@
+id: files-002-append-audit-log
+family: files
+title: Append deployment record to deployment log
+prompt: >-
+  Please append the deployment record 'DEPLOY_20260302_OK: build 481 deployed to
+  staging' to /var/log/deploy.log.
+envs:
+  files:
+    files:
+      /var/log/deploy.log: |
+        DEPLOY_20260301_OK: build 480 deployed to staging
+seed: 102
+tools: [files_read, files_append, files_write]
+max_steps: 4
+optimal_steps: 1
+expected_tools: [files_append]
+success:
+  - path: files.files."/var/log/deploy.log"
+    op: contains
+    value: "DEPLOY_20260302_OK: build 481 deployed to staging"
+    description: the deployment record was appended to the log
+traps: []
+reference_solution:
+  - tool: files_append
+    args:
+      path: /var/log/deploy.log
+      content: "\nDEPLOY_20260302_OK: build 481 deployed to staging\n"
+notes: Control task with no traps. Verifies appending to an existing log file.

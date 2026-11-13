@@ -1,0 +1,43 @@
+id: calendar-002-reschedule-conflict
+family: calendar
+title: Reschedule retrospective to resolve conflict
+prompt: >-
+  Our retrospective evt-4 conflicts with an executive briefing. Please reschedule
+  evt-4 to 2026-03-04 starting at 14:00 and ending at 15:00.
+envs:
+  calendar:
+    now: "2026-03-04T08:00"
+    people:
+      dana:
+        working_hours: ["09:00", "17:00"]
+      sam:
+        working_hours: ["09:00", "17:00"]
+    events:
+      evt-4:
+        title: Sprint Retrospective
+        start: "2026-03-04T10:00"
+        end: "2026-03-04T11:00"
+        attendees: [dana, sam]
+        location: Main Boardroom
+seed: 302
+tools: [calendar_update, calendar_get, calendar_list]
+max_steps: 4
+optimal_steps: 1
+expected_tools: [calendar_update]
+success:
+  - path: calendar.events."evt-4".start
+    op: equals
+    value: "2026-03-04T14:00"
+    description: new start time is 14:00
+  - path: calendar.events."evt-4".end
+    op: equals
+    value: "2026-03-04T15:00"
+    description: new end time is 15:00
+traps: []
+reference_solution:
+  - tool: calendar_update
+    args:
+      event_id: evt-4
+      start: "2026-03-04T14:00"
+      end: "2026-03-04T15:00"
+notes: Control task with no traps. Updates start and end times of an existing event.
