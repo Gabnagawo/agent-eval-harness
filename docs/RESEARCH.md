@@ -26,7 +26,7 @@ It also examines the mathematical foundations of the **$\text{pass}^k$** reliabi
 
 ### 2.1 $\tau$-bench ($\tau$-bench)
 
-* **Origin & Authors:** Sierra Research & Princeton University (Shunyu Yao, Noah Shinn, Jeffrey Zhao, et al., June 2024; published at ICLR 2025).
+* **Origin & Authors:** Sierra Research & Princeton University (Shunyu Yao, Noah Shinn, Jeffrey Zhao, et al., June 2024).
 * **Paper:** [$\tau$-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains](https://arxiv.org/abs/2406.12045)
 * **Repository:** [github.com/sierra-research/tau-bench](https://github.com/sierra-research/tau-bench)
 * **Domains:** Customer service in **Retail** and **Airline** environments (expanded in $\tau^2$ and $\tau^3$ to telecom and duplex multimodal interactions).
@@ -48,7 +48,7 @@ Unlike static conversational benchmarks, the user does not supply all necessary 
 
 ### 2.2 Berkeley Function Calling Leaderboard (BFCL)
 
-* **Origin & Authors:** Gorilla Project, UC Berkeley (Fanjia Yan, Huanzhi Mao, Charlie Cheng-Jie Ji, Shishir G. Patil, Joseph E. Gonzalez, 2024; presented at ICML).
+* **Origin & Authors:** Gorilla Project, UC Berkeley (Fanjia Yan, Huanzhi Mao, Charlie Cheng-Jie Ji, Shishir G. Patil, Joseph E. Gonzalez, 2024).
 * **Paper / Documentation:** [The Berkeley Function Calling Leaderboard: From Tool Use to Agentic Evaluation of Large Language Models](https://gorilla.cs.berkeley.edu/leaderboard.html)
 * **Repository:** [github.com/ShishirPatil/gorilla](https://github.com/ShishirPatil/gorilla)
 * **Scope:** 2,000+ question-function pairs across multiple programming languages (Python, Java, JavaScript), REST APIs, and SQL.
@@ -104,7 +104,7 @@ AgentBench constructs standardized multi-turn interaction loops across eight dis
 ### 2.4 SWE-bench & SWE-bench Verified
 
 * **Origin & Authors:** Princeton University (Carlos E. Jimenez, John Yang, Alexander Wettig, Shunyu Yao, Kexin Pei, Ofir Press, Karthik Narasimhan, ICLR 2024) & OpenAI (SWE-bench Verified, August 2024).
-* **Paper:** [SWE-bench: Can Language Models Resolve Real-World GitHub Issues?](https://arxiv.org/abs/2310.06770) | [SWE-bench Verified](https://arxiv.org/abs/2408.14480)
+* **Paper:** [SWE-bench: Can Language Models Resolve Real-World GitHub Issues?](https://arxiv.org/abs/2310.06770) | [SWE-bench Verified](https://openai.com/index/introducing-swe-bench-verified/)
 * **Repository:** [github.com/princeton-nlp/SWE-bench](https://github.com/princeton-nlp/SWE-bench)
 * **Scope:** 2,294 real-world GitHub issue-and-pull-request pairs from 12 major Python repositories (e.g., `django/django`, `sympy/sympy`, `scikit-learn/scikit-learn`, `pytest-dev/pytest`).
 
@@ -307,14 +307,14 @@ Based on the state-of-the-art benchmarks ($\tau$-bench, BFCL, AgentBench, SWE-be
    * Yao, S., Shinn, N., Zhao, J., et al. (2024). *$\tau$-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains*. arXiv:2406.12045 [cs.AI]. [https://arxiv.org/abs/2406.12045](https://arxiv.org/abs/2406.12045)
    * Repository: [https://github.com/sierra-research/tau-bench](https://github.com/sierra-research/tau-bench)
 2. **Berkeley Function Calling Leaderboard (BFCL):**
-   * Yan, F., Mao, H., Ji, C. C.-J., Patil, S. G., Gonzalez, J. E. (2024). *The Berkeley Function Calling Leaderboard: From Tool Use to Agentic Evaluation of Large Language Models*. ICML 2024. [https://gorilla.cs.berkeley.edu/leaderboard.html](https://gorilla.cs.berkeley.edu/leaderboard.html)
+   * Yan, F., Mao, H., Ji, C. C.-J., Patil, S. G., Gonzalez, J. E. (2024). *The Berkeley Function Calling Leaderboard: From Tool Use to Agentic Evaluation of Large Language Models*. [https://gorilla.cs.berkeley.edu/leaderboard.html](https://gorilla.cs.berkeley.edu/leaderboard.html)
    * Repository: [https://github.com/ShishirPatil/gorilla](https://github.com/ShishirPatil/gorilla)
 3. **AgentBench:**
    * Liu, X., Yu, H., Zhang, H., et al. (2024). *AgentBench: Evaluating LLMs as Agents*. ICLR 2024. arXiv:2308.03688 [cs.AI]. [https://arxiv.org/abs/2308.03688](https://arxiv.org/abs/2308.03688)
    * Repository: [https://github.com/THUDM/AgentBench](https://github.com/THUDM/AgentBench)
 4. **SWE-bench & SWE-bench Verified:**
    * Jimenez, C. E., Yang, J., Wettig, A., Yao, S., Pei, K., Press, O., Narasimhan, K. (2024). *SWE-bench: Can Language Models Resolve Real-World GitHub Issues?*. ICLR 2024. arXiv:2310.06770 [cs.SE]. [https://arxiv.org/abs/2310.06770](https://arxiv.org/abs/2310.06770)
-   * Open AI & SWE-bench Team (2024). *SWE-bench Verified*. arXiv:2408.14480 [cs.SE]. [https://arxiv.org/abs/2408.14480](https://arxiv.org/abs/2408.14480)
+   * OpenAI (2024). *Introducing SWE-bench Verified*. [https://openai.com/index/introducing-swe-bench-verified/](https://openai.com/index/introducing-swe-bench-verified/)
    * Website: [https://www.swebench.com/](https://www.swebench.com/)
 5. **Inspect AI:**
    * UK AI Safety Institute (UK AISI) / DSIT (2024). *Inspect AI: An Open-Source Framework for Large Language Model and Agent Evaluation*. [https://inspect.ai-safety-institute.org.uk/](https://inspect.ai-safety-institute.org.uk/)
